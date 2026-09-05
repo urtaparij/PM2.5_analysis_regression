@@ -39,11 +39,10 @@ for loc in locations:
     bbox = str(west) + "," + str(south) + "," + str(east) + "," + str(north)
 
     out_path = "data/raw/firms_" + name + "_raw.csv"
-    out_file = open(out_path, "w", newline="")
-    out_writer = csv.writer(out_file)
-    header_written = False
+    header_row = None
+    collected_rows = []
+    request_failed = False
 
-    total_rows = 0
     for year in seasons:
         season_start = datetime.date(year, 2, 1)
         season_end = datetime.date(year, 4, 30)
@@ -58,6 +57,7 @@ for loc in locations:
             response_text = response.text.strip()
             if response_text.startswith("Invalid") or response_text.startswith("Error") or response_text == "":
                 print("WARNING: request failed:", response_text)
+                request_failed = True
                 lines = []
             else:
                 lines = response_text.split("\n")
@@ -67,18 +67,26 @@ for loc in locations:
                 for row in reader:
                     rows.append(row)
                 if len(rows) > 0:
-                    if header_written == False:
-                        out_writer.writerow(rows[0])
-                        header_written = True
+                    if header_row is None:
+                        header_row = rows[0]
                     i = 1
                     while i < len(rows):
-                        out_writer.writerow(rows[i])
-                        total_rows = total_rows + 1
+                        collected_rows.append(rows[i])
                         i = i + 1
             chunk_start = chunk_start + datetime.timedelta(days=chunk_days)
 
-    out_file.close()
-    print("saved", out_path, "rows:", total_rows)
+    if len(collected_rows) > 0:
+        out_file = open(out_path, "w", newline="")
+        out_writer = csv.writer(out_file)
+        out_writer.writerow(header_row)
+        i = 0
+        while i < len(collected_rows):
+            out_writer.writerow(collected_rows[i])
+            i = i + 1
+        out_file.close()
+        print("saved", out_path, "rows:", len(collected_rows))
+    else:
+        print("WARNING: no rows fetched for", name, "- leaving", out_path, "untouched (check FIRMS_MAP_KEY in .env)")
 
 print("total API requests made:", request_count)
 print("done")
