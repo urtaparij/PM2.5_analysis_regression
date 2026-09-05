@@ -22,6 +22,7 @@ python src/fetch_firms.py
 python src/prepare_data.py
 python src/analyse.py
 python src/model.py
+python src/compare_air4thai.py
 ```
 
 - `fetch_data.py` downloads hourly PM2.5/pollutant and weather data for both locations from the Open-Meteo Air Quality API and Archive API (2023-01-01 to the run date), and writes raw CSVs to `data/raw/`.
@@ -29,6 +30,7 @@ python src/model.py
 - `prepare_data.py` joins each location's pollutant and weather data on timestamp, drops the fetch-date (which mixes forecast and observed hours), aggregates hourly data to daily, and writes `data/processed/{location}_daily.csv`.
 - `analyse.py` produces the figures in `outputs/figures/` and descriptive statistics in `outputs/results/`.
 - `model.py` trains a persistence baseline and a linear regression model (per location) to predict tomorrow's daily mean PM2.5, using a time-ordered train/test split and TimeSeriesSplit cross-validation, and writes metrics to `outputs/results/`.
+- `compare_air4thai.py` fetches the current reading from the nearest Air4Thai ground station to each location and compares it against a same-timestamp Open-Meteo estimate, writing `outputs/results/air4thai_comparison.csv` (report checkpoint C6). Independent of the modelling pipeline; run any time.
 
 Re-running `fetch_data.py` and `fetch_firms.py` on a later date will produce different files, because more days of data will have accumulated since the original run (2023-01-01 to run-date is always the requested range).
 
