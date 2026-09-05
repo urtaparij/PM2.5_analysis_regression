@@ -1,0 +1,7 @@
+metric,value
+matched_days,1341
+mean_pm25_chiangmai,22.096464081531195
+mean_pm25_nan,16.532478871488937
+mean_difference_chiangmai_minus_nan,5.563985210042258
+pearson_correlation,0.7816641865150682
+pct_days_differing_more_than_5ugm3,55.48098434004475

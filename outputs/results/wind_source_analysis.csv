@@ -1,0 +1,5 @@
+location,metric,value_deg,octant
+chiangmai,mean_wind_from_bearing_on_bad_days,228.4,SW
+chiangmai,mean_bearing_to_firms_hotspots,48.0,NE
+nan,mean_wind_from_bearing_on_bad_days,185.0,S
+nan,mean_bearing_to_firms_hotspots,203.5,SW

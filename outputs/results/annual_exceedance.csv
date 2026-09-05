@@ -1,0 +1,9 @@
+location,year,days_over_standard,days_in_year,note
+chiangmai,2023,40,365,
+chiangmai,2024,11,366,
+chiangmai,2025,29,365,
+chiangmai,2026,45,245,partial year
+nan,2023,33,365,
+nan,2024,19,366,
+nan,2025,21,365,
+nan,2026,27,245,partial year

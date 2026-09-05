@@ -1,0 +1,7 @@
+location,metric,baseline,model,cv_mean_mae,cv_std_mae
+chiangmai,MAE,4.4602,4.1027,5.0269,2.3607
+chiangmai,RMSE,6.8398,6.2843,,
+chiangmai,R2,0.8228,0.8504,,
+nan,MAE,4.0807,3.7803,4.8555,3.1543
+nan,RMSE,6.1470,5.3509,,
+nan,R2,0.8206,0.8640,,
