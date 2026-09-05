@@ -1,10 +1,6 @@
-# PM2.5 in Northern Thailand: from raw data to a recommendation
+เปรียบเทียบ PM2.5 ระหว่างเชียงใหม่ (ภูมิประเทศแอ่งกระทะ) กับน่าน (ภูมิประเทศภูเขาซับซ้อน มีการเผาไร่เกษตรบนที่สูง) และทำนาย PM2.5 เฉลี่ยรายวันของวันถัดไป (regression)
 
-DS-270702 Data Science Programming, MSc Data Science, Chiang Mai University — Homework 4.
-
-Compares PM2.5 in Chiang Mai (basin terrain) vs Nan (mountainous terrain, upland agricultural burning) and predicts tomorrow's daily mean PM2.5 (regression).
-
-## Setup
+## การติดตั้ง
 
 ```
 python3 -m venv venv
@@ -12,9 +8,9 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-Requires Python 3.10+.
+ต้องการ Python 3.10 ขึ้นไป
 
-## How to run, in order
+## วิธีรัน (ตามลำดับ)
 
 ```
 python src/fetch_data.py
@@ -25,36 +21,36 @@ python src/model.py
 python src/compare_air4thai.py
 ```
 
-- `fetch_data.py` downloads hourly PM2.5/pollutant and weather data for both locations from the Open-Meteo Air Quality API and Archive API (2023-01-01 to the run date), and writes raw CSVs to `data/raw/`.
-- `fetch_firms.py` downloads NASA FIRMS fire hotspot detections for both locations (burn seasons 2023-2026) into `data/raw/`. Requires a free FIRMS MAP_KEY (https://firms.modis.gov/api/map_key/) placed in a local `.env` file as `FIRMS_MAP_KEY=your_key_here` (not committed — see `.gitignore`). This step is optional; it only supports the Part D discussion in the report and is not used by `model.py`.
-- `prepare_data.py` joins each location's pollutant and weather data on timestamp, drops the fetch-date (which mixes forecast and observed hours), aggregates hourly data to daily, and writes `data/processed/{location}_daily.csv`.
-- `analyse.py` produces the figures in `outputs/figures/` and descriptive statistics in `outputs/results/`.
-- `model.py` trains a persistence baseline and a linear regression model (per location) to predict tomorrow's daily mean PM2.5, using a time-ordered train/test split and TimeSeriesSplit cross-validation, and writes metrics to `outputs/results/`.
-- `compare_air4thai.py` fetches the current reading from the nearest Air4Thai ground station to each location and compares it against a same-timestamp Open-Meteo estimate, writing `outputs/results/air4thai_comparison.csv` (report checkpoint C6). Independent of the modelling pipeline; run any time.
+- `fetch_data.py` ดึงข้อมูล PM2.5/มลพิษ และสภาพอากาศรายชั่วโมงของทั้งสองพื้นที่จาก Open-Meteo Air Quality API และ Archive API (2023-01-01 ถึงวันที่รัน) บันทึกเป็น raw CSV ไว้ที่ `data/raw/`
+- `fetch_firms.py` ดึงข้อมูลจุดความร้อนจากไฟ (fire hotspot) จาก NASA FIRMS สำหรับทั้งสองพื้นที่ (ฤดูเผา 2023-2026) ไว้ที่ `data/raw/` ต้องมี FIRMS MAP_KEY ฟรี (https://firms.modis.gov/api/map_key/) เก็บไว้ในไฟล์ `.env` ที่เครื่อง ในรูปแบบ `FIRMS_MAP_KEY=your_key_here` (ไม่ได้ commit เข้า git — ดู `.gitignore`) ขั้นตอนนี้เป็นทางเลือก ใช้สนับสนุนการอภิปรายใน Part D ของรายงานเท่านั้น ไม่ได้ใช้ใน `model.py`
+- `prepare_data.py` รวมข้อมูลมลพิษกับสภาพอากาศของแต่ละพื้นที่ด้วย timestamp, ตัดวันที่ fetch ข้อมูล (ซึ่งมีค่า forecast ปนกับค่าจริง) ทิ้ง, aggregate ข้อมูลรายชั่วโมงเป็นรายวัน, บันทึกเป็น `data/processed/{location}_daily.csv`
+- `analyse.py` สร้างกราฟทั้งหมดใน `outputs/figures/` และสถิติเชิงพรรณนาใน `outputs/results/`
+- `model.py` เทรน persistence baseline และโมเดล linear regression (แยกต่อพื้นที่) เพื่อทำนาย PM2.5 เฉลี่ยรายวันของวันถัดไป โดยใช้ time-ordered train/test split และ TimeSeriesSplit cross-validation บันทึกผลลัพธ์ไว้ที่ `outputs/results/`
+- `compare_air4thai.py` ดึงค่าปัจจุบันจากสถานี Air4Thai ที่ใกล้แต่ละพื้นที่ที่สุด เทียบกับค่าประมาณของ Open-Meteo ณ เวลาเดียวกัน บันทึกเป็น `outputs/results/air4thai_comparison.csv` (checkpoint C6 ในรายงาน) เป็นอิสระจาก pipeline การสร้างโมเดล รันเมื่อไรก็ได้
 
-Re-running `fetch_data.py` and `fetch_firms.py` on a later date will produce different files, because more days of data will have accumulated since the original run (2023-01-01 to run-date is always the requested range).
+การรัน `fetch_data.py` และ `fetch_firms.py` ซ้ำในวันหลังจะได้ไฟล์ที่ต่างออกไป เพราะจะมีข้อมูลสะสมเพิ่มขึ้นตั้งแต่ครั้งที่รันครั้งแรก (ช่วงที่ขอคือ 2023-01-01 ถึงวันที่รันเสมอ)
 
-## Repository layout
+## โครงสร้าง repository
 
 ```
 README.md
 requirements.txt
 src/
-  fetch_data.py       downloads raw data, writes to data/raw/
-  fetch_firms.py       downloads NASA FIRMS fire hotspot data, writes to data/raw/
-  prepare_data.py      cleaning, joining, feature construction
-  analyse.py            figures and descriptive statistics
-  model.py               baseline, training, evaluation
+  fetch_data.py         ดึงข้อมูลดิบ บันทึกไปที่ data/raw/
+  fetch_firms.py         ดึงข้อมูลจุดความร้อนจาก NASA FIRMS บันทึกไปที่ data/raw/
+  prepare_data.py         ทำความสะอาด รวมข้อมูล สร้าง feature
+  analyse.py                กราฟและสถิติเชิงพรรณนา
+  model.py                    baseline, training, evaluation
 data/
-  raw/                    exactly what the API returned
-  processed/              what was fed to the model
+  raw/                          ข้อมูลตามที่ API ส่งมาเป๊ะๆ
+  processed/                    ข้อมูลที่ป้อนเข้าโมเดล
 outputs/
-  figures/                fig01_*.png ... fig08_*.png
-  results/                metrics and descriptive-statistics CSVs
+  figures/                       fig01_*.png ... fig08_*.png
+  results/                       ไฟล์ CSV ของ metrics และสถิติเชิงพรรณนา
 report/
   report.pdf
 ```
 
-## AI usage disclosure
+## การเปิดเผยการใช้ AI
 
-See the final page of `report/report.pdf`.
+ดูหน้าสุดท้ายของ `report/report.pdf`
